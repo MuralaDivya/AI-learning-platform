@@ -1,146 +1,172 @@
-# backend/assessment.py
-
+import json
 import random
+import os
 
-# 📚 CLASS-WISE SYLLABUS DATABASE
-SYLLABUS = {
-    "1": {
-        "Math": ["Addition", "Subtraction", "Counting"],
-        "Science": ["Plants", "Animals", "Body Parts"]
-    },
-    "2": {
-        "Math": ["Addition", "Subtraction", "Multiplication"],
-        "Science": ["Living Things", "Water", "Air"]
-    },
-    "3": {
-        "Math": ["Addition", "Subtraction", "Multiplication", "Division"],
-        "Science": ["Plants", "Animals", "Soil"]
-    },
-    "4": {
-        "Math": ["Fractions", "Multiplication", "Division"],
-        "Science": ["Human Body", "Energy", "Matter"]
-    },
-    "5": {
-        "Math": ["Fractions", "Decimals", "LCM", "HCF"],
-        "Science": ["Plants", "Animals", "Ecosystem"]
-    },
-    "6": {
-        "Math": ["Integers", "Algebra Basics", "Fractions"],
-        "Science": ["Food", "Materials", "Motion"]
-    },
-    "7": {
-        "Math": ["Algebra", "Ratio", "Proportion"],
-        "Science": ["Nutrition", "Respiration", "Transportation"]
-    },
-    "8": {
-        "Math": ["Linear Equations", "Mensuration"],
-        "Science": ["Force", "Friction", "Sound"]
-    },
-    "9": {
-        "Math": ["Polynomials", "Trigonometry"],
-        "Science": ["Motion", "Atoms", "Tissues"]
-    },
-    "10": {
-        "Math": ["Quadratic Equations", "Trigonometry"],
-        "Science": ["Electricity", "Magnetism", "Chemistry Basics"]
-    },
-    "11": {
-        "Math": ["Calculus", "Permutations"],
-        "Physics": ["Kinematics", "Laws of Motion"],
-        "Chemistry": ["Atomic Structure", "Thermodynamics"]
-    },
-    "12": {
-        "Math": ["Integrals", "Probability"],
-        "Physics": ["Electrostatics", "Optics"],
-        "Chemistry": ["Organic Chemistry", "Electrochemistry"]
-    },
-    "BTech": {
-        "AI": ["Machine Learning", "Neural Networks", "Data Science"],
-        "DBMS": ["SQL", "Normalization", "Transactions"],
-        "Math": ["Linear Algebra", "Probability"],
-        "OS": ["Processes", "Memory Management"]
-    }
-}
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SYLLABUS_PATH = os.path.join(BASE_DIR, "syllabus.json")
 
-# ==============================
-# 🧠 QUESTION GENERATION ENGINE
-# ==============================
-def generate_questions(student_class, subject):
+
+def load_syllabus():
+    with open(SYLLABUS_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+# -------------------------------
+# QUESTION GENERATION
+# -------------------------------
+def generate_questions(student_class, subject, total_questions=20):
+    syllabus = load_syllabus()
+
     student_class = str(student_class)
-    subject = subject.strip().title()
 
-    if student_class not in SYLLABUS:
-        return [{"q": "Invalid class level", "a": "NA", "topic": "NA"}]
+    if student_class not in syllabus:
+        return [{
+            "q": "No syllabus data for this class yet",
+            "options": ["N/A"],
+            "a": "N/A",
+            "chapter": "N/A"
+        }]
 
-    if subject not in SYLLABUS[student_class]:
-        return [{"q": f"No syllabus data for {subject} in Class {student_class}", "a": "NA", "topic": "NA"}]
+    if subject not in syllabus[student_class]:
+        return [{
+            "q": "No subject data found for this subject",
+            "options": ["N/A"],
+            "a": "N/A",
+            "chapter": "N/A"
+        }]
 
-    topics = SYLLABUS[student_class][subject]
-    questions = []
+    chapters = syllabus[student_class][subject]  # list
 
-    for i in range(10):  # 10 questions
-        topic = random.choice(topics)
+    all_questions = []
 
-        if subject == "Math":
-            a = random.randint(1, 20)
-            b = random.randint(1, 20)
-            q = f"{a} + {b} = ?"
-            ans = a + b
+    for chapter_obj in chapters:
+        chapter_name = chapter_obj.get("chapter", "General")
+        qlist = chapter_obj.get("questions", [])
 
-        elif subject == "Science":
-            q = f"What is {topic}?"
-            ans = "Descriptive"
+        for q in qlist:
+            all_questions.append({
+                "q": q["q"],
+                "options": q["options"],
+                "a": q["a"],
+                "chapter": chapter_name
+            })
 
-        elif subject in ["AI", "DBMS", "OS", "Physics", "Chemistry"]:
-            q = f"Explain {topic}"
-            ans = "Conceptual"
+    # remove duplicates
+    unique = []
+    seen = set()
+    for q in all_questions:
+        if q["q"] not in seen:
+            seen.add(q["q"])
+            unique.append(q)
 
-        else:
-            q = f"Describe {topic}"
-            ans = "Conceptual"
+    random.shuffle(unique)
 
-        questions.append({
-            "topic": topic,
-            "q": q,
-            "a": ans
-        })
-
-    return questions
+    return unique[:total_questions]
 
 
-# ==============================
-# 🎯 EVALUATION ENGINE
-# ==============================
-def evaluate_answers(answers):
+# -------------------------------
+# ANSWER EVALUATION
+# -------------------------------
+def evaluate_answers(questions, user_answers):
     score = 0
-    weak_topics = {}
-    strong_topics = {}
+    topic_stats = {}
 
-    for ans in answers:
-        correct = str(ans["correct"]).strip().lower()
-        user = str(ans["user"]).strip().lower()
-        topic = ans["topic"]
+    for i, q in enumerate(questions):
+        correct = q["a"]
+        user = user_answers[i]
+        chapter = q["chapter"]
+
+        if chapter not in topic_stats:
+            topic_stats[chapter] = {"correct": 0, "total": 0}
+
+        topic_stats[chapter]["total"] += 1
 
         if user == correct:
             score += 1
-            strong_topics[topic] = strong_topics.get(topic, 0) + 1
+            topic_stats[chapter]["correct"] += 1
+
+    percentage = (score / len(questions)) * 100
+
+    if percentage >= 85:
+        level = "Advanced"
+    elif percentage >= 60:
+        level = "Intermediate"
+    else:
+        level = "Beginner"
+
+    weak_topics = []
+    strong_topics = []
+
+    for topic, data in topic_stats.items():
+        acc = (data["correct"] / data["total"]) * 100
+        if acc < 50:
+            weak_topics.append(topic)
         else:
-            weak_topics[topic] = weak_topics.get(topic, 0) + 1
-
-    total = len(answers)
-    percentage = (score / total) * 100 if total > 0 else 0
-
-    ability = "Beginner"
-    if percentage >= 80:
-        ability = "Advanced"
-    elif percentage >= 50:
-        ability = "Intermediate"
+            strong_topics.append(topic)
 
     return {
         "score": score,
-        "total": total,
+        "total": len(questions),
         "percentage": round(percentage, 2),
-        "ability_level": ability,
+        "level": level,
         "weak_topics": weak_topics,
         "strong_topics": strong_topics
     }
+
+
+# -------------------------------
+# LEARNING PLAN GENERATOR (AI ENGINE)
+# -------------------------------
+def generate_learning_plan(result_data, student_class, subject):
+    level = result_data["level"]
+    weak = result_data["weak_topics"]
+    strong = result_data["strong_topics"]
+
+    plan = {
+        "level": level,
+        "daily_plan": [],
+        "weekly_plan": [],
+        "focus_topics": weak,
+        "revision_topics": strong,
+        "strategy": ""
+    }
+
+    if level == "Beginner":
+        plan["strategy"] = "Concept building + basics + slow learning + repetition"
+        speed = "Slow"
+    elif level == "Intermediate":
+        plan["strategy"] = "Concept strengthening + practice + tests"
+        speed = "Medium"
+    else:
+        plan["strategy"] = "Advanced problem solving + mock tests + speed learning"
+        speed = "Fast"
+
+    # Daily Plan
+    for topic in weak:
+        plan["daily_plan"].append({
+            "topic": topic,
+            "tasks": [
+                "Learn concepts",
+                "Watch explanation video",
+                "Practice basic questions",
+                "Solve examples"
+            ]
+        })
+
+    # Weekly Plan
+    for topic in weak:
+        plan["weekly_plan"].append({
+            "topic": topic,
+            "tasks": [
+                "Deep learning",
+                "Practice set",
+                "Mini test",
+                "Revision"
+            ]
+        })
+
+    plan["learning_speed"] = speed
+    plan["subject"] = subject
+    plan["class"] = student_class
+
+    return plan

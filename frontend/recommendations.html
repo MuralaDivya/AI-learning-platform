@@ -1,89 +1,162 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Learning Diagnostic System</title>
+    <title>AI Learning Plan</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
+<div class="navbar">
+    <h2>AI Learning Platform</h2>
+    <div class="nav-links">
+        <a href="profile.html">Profile</a>
+        <a href="assessment.html">Assessment</a>
+        <a href="progress.html">Progress</a>
+    </div>
+</div>
+
 <div class="container">
-    <h1>AI Learning Diagnostic System</h1>
-    <p>Smart Assessment for Personalized Learning</p>
 
+    <h1>AI Personalized Learning Plan</h1>
+    <p style="text-align:center">Your smart roadmap for mastery 🚀</p>
+
+    <!-- Skill Summary -->
     <div class="card">
-        <h2>Student Details</h2>
-
-        <input id="class" placeholder="Class / Level (1-12 / BTech / Degree)">
-        <input id="subject" placeholder="Subject (AI, DBMS, Math, Science)">
-        <input id="goal" placeholder="Goal (Exams, Career, Mastery)">
-
-        <button onclick="startAssessment()">Start AI Diagnostic Test</button>
+        <h2>🧠 Skill Analysis</h2>
+        <div id="skillSummary" class="grid"></div>
     </div>
 
-    <div id="examBox" class="card"></div>
+    <!-- Learning Roadmap -->
+    <div class="card">
+        <h2>🛣 Learning Roadmap</h2>
+        <div id="roadmap"></div>
+    </div>
+
+    <!-- Daily Plan -->
+    <div class="card">
+        <h2>📅 Daily Learning Plan</h2>
+        <div id="dailyPlan" class="grid"></div>
+    </div>
+
+    <!-- Practice Section -->
+    <div class="card">
+        <h2>🧪 Practice Engine</h2>
+        <div id="practicePlan" class="grid"></div>
+    </div>
+
+    <!-- Video Learning -->
+    <div class="card">
+        <h2>📺 Video Learning</h2>
+        <div id="videoSection" class="grid"></div>
+    </div>
+
+    <!-- AI Coach -->
+    <div class="card">
+        <h2>🤖 AI Coach</h2>
+        <div id="aiCoach"></div>
+    </div>
+
+</div>
+
+<div class="footer">
+    AI Personalized Learning Platform © 2026
 </div>
 
 <script>
-let examQuestions = [];
+const result = JSON.parse(localStorage.getItem("assessment_result"));
 
-function startAssessment(){
-    const subject = document.getElementById("subject").value;
-    const classLevel = document.getElementById("class").value;
+/* Skill Summary */
+let skillHTML = "";
+for(let topic in result.topic_analysis){
+    let t = result.topic_analysis[topic];
+    let strength = (t.correct/t.total)*100;
+    let level = strength > 70 ? "Strong" : strength > 40 ? "Average" : "Weak";
 
-    fetch("http://127.0.0.1:5000/ai/get_exam", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            subject: subject,
-            class: classLevel
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        examQuestions = data.questions;
-        renderExam();
-    });
+    skillHTML += `
+        <div class="card">
+            <h3>${topic}</h3>
+            <p>Accuracy: ${strength.toFixed(0)}%</p>
+            <span class="badge">${level}</span>
+        </div>
+    `;
 }
+document.getElementById("skillSummary").innerHTML = skillHTML;
 
-function renderExam(){
-    let html = "<h2>AI Diagnostic Test</h2><form id='examForm'>";
-    
-    examQuestions.forEach((q, i) => {
-        html += `
-            <div class="question">
-                <p>${i+1}. ${q.q}</p>
-                <input type="text" name="q${i}" placeholder="Your answer">
-            </div>
-        `;
-    });
 
-    html += `<button type="button" onclick="submitExam()">Submit Assessment</button></form>`;
+/* Roadmap */
+let roadmapHTML = "";
+Object.keys(result.topic_analysis).forEach((topic,i)=>{
+    roadmapHTML += `
+        <div class="question-box">
+            <b>Step ${i+1}:</b> Master ${topic}
+            <p>Concept → Practice → Test → Revise</p>
+        </div>
+    `;
+});
+document.getElementById("roadmap").innerHTML = roadmapHTML;
 
-    document.getElementById("examBox").innerHTML = html;
-}
 
-function submitExam(){
-    const form = document.getElementById("examForm");
-    let answers = [];
+/* Daily Plan */
+let dailyHTML = `
+    <div class="card">
+        <h3>Morning</h3>
+        <p>Concept Learning</p>
+        <span class="badge">AI Guided</span>
+    </div>
+    <div class="card">
+        <h3>Afternoon</h3>
+        <p>Practice Problems</p>
+        <span class="badge">Adaptive</span>
+    </div>
+    <div class="card">
+        <h3>Evening</h3>
+        <p>Revision + AI Quiz</p>
+        <span class="badge">Smart Test</span>
+    </div>
+`;
+document.getElementById("dailyPlan").innerHTML = dailyHTML;
 
-    examQuestions.forEach((q, i) => {
-        answers.push(form[`q${i}`].value);
-    });
 
-    fetch("http://127.0.0.1:5000/ai/submit_exam", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            questions: examQuestions,
-            answers: answers
-        })
-    })
-    .then(res => res.json())
-    .then(result => {
-        localStorage.setItem("ai_result", JSON.stringify(result));
-        window.location.href = "progress.html";
-    });
-}
+/* Practice Plan */
+let practiceHTML = "";
+Object.keys(result.topic_analysis).forEach(topic=>{
+    practiceHTML += `
+        <div class="card">
+            <h3>${topic}</h3>
+            <p>Practice Set: Easy → Medium → Hard</p>
+            <span class="badge">AI Adaptive</span>
+        </div>
+    `;
+});
+document.getElementById("practicePlan").innerHTML = practiceHTML;
+
+
+/* Video Learning */
+let videoHTML = `
+    <div class="card">
+        <h3>Concept Videos</h3>
+        <p>AI Recommended Learning Videos</p>
+        <a href="https://www.youtube.com/results?search_query=${result.subject}+basics" target="_blank">Watch Videos</a>
+    </div>
+    <div class="card">
+        <h3>Practice Videos</h3>
+        <p>Solved Examples & Tricks</p>
+        <a href="https://www.youtube.com/results?search_query=${result.subject}+practice+questions" target="_blank">Watch Practice</a>
+    </div>
+`;
+document.getElementById("videoSection").innerHTML = videoHTML;
+
+
+/* AI Coach */
+document.getElementById("aiCoach").innerHTML = `
+    <p>🎯 Focus more on weak areas</p>
+    <p>⏱ Study in short focused sessions</p>
+    <p>📈 Daily revision is mandatory</p>
+    <p>🧠 Concept clarity before speed</p>
+    <p>🔥 Consistency beats intensity</p>
+`;
+
 </script>
 
 </body>

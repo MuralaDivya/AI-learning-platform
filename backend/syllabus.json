@@ -1,0 +1,66 @@
+{
+  "1": {
+    "Math": ["Numbers","Addition","Subtraction","Shapes","Patterns"],
+    "EVS": ["My Family","Plants","Animals","Water","Food"],
+    "English": ["Alphabet","Phonics","Words","Simple Sentences"]
+  },
+
+  "2": {
+    "Math": ["Numbers","Addition","Subtraction","Multiplication","Money","Time"],
+    "EVS": ["Living Things","Transport","Seasons","Health"],
+    "English": ["Grammar","Sentences","Reading","Writing"]
+  },
+
+  "3": {
+    "Math": ["Numbers","Addition","Subtraction","Multiplication","Division","Fractions"],
+    "Science": ["Plants","Animals","Soil","Water","Air"],
+    "English": ["Nouns","Pronouns","Verbs","Comprehension"]
+  },
+
+  "4": {
+    "Math": ["Factors","Multiples","Fractions","Decimals","Geometry","Measurements"],
+    "Science": ["Food","Digestion","Matter","Energy","Environment"],
+    "English": ["Tenses","Adjectives","Paragraph Writing"]
+  },
+
+  "5": {
+    "Math": ["LCM","HCF","Fractions","Decimals","Area","Volume"],
+    "Science": ["Living Things","Human Body","Energy","Matter"],
+    "English": ["Grammar","Comprehension","Essay Writing"]
+  },
+
+  "6": {
+    "Math": ["Integers","Algebra","Fractions","Decimals","Geometry","Ratio"],
+    "Science": ["Food","Materials","Separation","Motion","Light"],
+    "Social": ["History","Geography","Civics"],
+    "English": ["Grammar","Reading","Writing"]
+  },
+
+  "7": {
+    "Math": ["Rational Numbers","Linear Equations","Geometry","Mensuration"],
+    "Science": ["Nutrition","Respiration","Heat","Motion","Light"],
+    "Social": ["Medieval History","Geography","Civics"],
+    "English": ["Grammar","Comprehension","Writing"]
+  },
+
+  "8": {
+    "Math": ["Algebra","Linear Equations","Graphs","Mensuration","Probability"],
+    "Science": ["Force","Friction","Sound","Light","Chemical Effects"],
+    "Social": ["Modern History","Resources","Constitution"],
+    "English": ["Grammar","Essay","Comprehension"]
+  },
+
+  "9": {
+    "Math": ["Polynomials","Linear Equations","Geometry","Statistics","Probability"],
+    "Science": ["Physics","Chemistry","Biology"],
+    "Social": ["History","Geography","Economics","Political Science"],
+    "English": ["Grammar","Writing","Literature"]
+  },
+
+  "10": {
+    "Math": ["Trigonometry","Quadratic Equations","Probability","Statistics","Geometry"],
+    "Science": ["Physics","Chemistry","Biology"],
+    "Social": ["History","Geography","Civics","Economics"],
+    "English": ["Grammar","Literature","Writing"]
+  }
+}

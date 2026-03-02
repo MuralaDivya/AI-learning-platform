@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Tutor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="navbar">
+    <h2>AI Learning Platform</h2>
+    <div class="nav-links">
+        <a href="recommendations.html">AI Plan</a>
+        <a href="progress.html">Progress</a>
+        <a href="assessment.html">Assessment</a>
+    </div>
+</div>
+
+<div class="container">
+
+<h1>🤖 AI Tutor</h1>
+<p style="text-align:center">Your personal AI teacher</p>
+
+<div class="card" style="height:500px; display:flex; flex-direction:column;">
+
+    <div id="chatBox" style="flex:1; overflow-y:auto; padding:10px;">
+        <div class="question-box">
+            <b>AI Tutor:</b> Hi 👋 I'm your AI Tutor. Ask me anything about your subject!
+        </div>
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:10px;">
+        <input type="text" id="userInput" placeholder="Ask your doubt..." style="flex:1;">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+
+</div>
+
+<div class="footer">
+    AI Personalized Learning Platform © 2026
+</div>
+
+<script>
+function sendMessage(){
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if(!msg) return;
+
+    const chatBox = document.getElementById("chatBox");
+
+    // User message
+    chatBox.innerHTML += `
+        <div class="question-box" style="background:#e0f2fe;border-left:4px solid #0284c7;">
+            <b>You:</b> ${msg}
+        </div>
+    `;
+
+    input.value = "";
+
+    // AI Response simulation
+    setTimeout(()=>{
+        let aiReply = generateAIResponse(msg);
+
+        chatBox.innerHTML += `
+            <div class="question-box">
+                <b>AI Tutor:</b> ${aiReply}
+            </div>
+        `;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    },700);
+}
+
+function generateAIResponse(msg){
+    msg = msg.toLowerCase();
+
+    if(msg.includes("ai")){
+        return "Artificial Intelligence (AI) is the ability of machines to perform tasks that normally require human intelligence like learning, reasoning, and problem-solving.";
+    }
+    if(msg.includes("math")){
+        return "Math is about understanding numbers, patterns, and logic. Tell me which topic you're studying (fractions, algebra, geometry) 😊";
+    }
+    if(msg.includes("dbms")){
+        return "DBMS (Database Management System) is used to store, manage and retrieve data efficiently. Example: MySQL, Oracle, MongoDB.";
+    }
+    if(msg.includes("practice")){
+        return "Sure! Let's practice 😊\nExample: What is 12 + 7 ?";
+    }
+    if(msg.includes("example")){
+        return "Here is an example:\nIf x + 3 = 7, then x = 4.";
+    }
+    if(msg.includes("test")){
+        return "I can prepare a test for you. Tell me your class and subject 📚";
+    }
+
+    return "That's a good question 😊 Can you be more specific so I can help you better?";
+}
+</script>
+
+</body>
+</html>

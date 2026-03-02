@@ -1,41 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Learning Report</title>
+    <title>AI Progress Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
+<div class="navbar">
+    <h2>AI Learning Platform</h2>
+    <div class="nav-links">
+        <a href="profile.html">Profile</a>
+        <a href="assessment.html">Assessment</a>
+        <a href="recommendations.html">AI Plan</a>
+    </div>
+</div>
+
 <div class="container">
-    <h1>AI Learning Analysis Report</h1>
-    <div id="report" class="card"></div>
+
+<h1>📊 AI Progress Dashboard</h1>
+<p style="text-align:center">Track your growth, consistency & mastery</p>
+
+<!-- Overview -->
+<div class="card">
+    <h2>📈 Learning Overview</h2>
+    <div class="grid">
+        <div class="progress-card">
+            <h3>Skill Level</h3>
+            <p id="skillLevel">Loading...</p>
+        </div>
+        <div class="progress-card">
+            <h3>Accuracy</h3>
+            <p id="accuracy">Loading...</p>
+        </div>
+        <div class="progress-card">
+            <h3>Learning Speed</h3>
+            <p id="speed">Loading...</p>
+        </div>
+        <div class="progress-card">
+            <h3>Consistency</h3>
+            <p id="consistency">Loading...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Skill Growth -->
+<div class="card">
+    <h2>🧠 Skill Growth</h2>
+    <div id="skillGrowth" class="grid"></div>
+</div>
+
+<!-- Weekly Progress -->
+<div class="card">
+    <h2>📅 Weekly Progress</h2>
+    <div id="weeklyProgress" class="grid"></div>
+</div>
+
+<!-- Monthly Progress -->
+<div class="card">
+    <h2>🗓 Monthly Progress</h2>
+    <div id="monthlyProgress" class="grid"></div>
+</div>
+
+<!-- AI Insights -->
+<div class="card">
+    <h2>🤖 AI Insights</h2>
+    <div id="aiInsights"></div>
+</div>
+
+</div>
+
+<div class="footer">
+    AI Personalized Learning Platform © 2026
 </div>
 
 <script>
-const data = JSON.parse(localStorage.getItem("ai_result"));
+const result = JSON.parse(localStorage.getItem("assessment_result")) || {
+    percentage: 65,
+    level: "Intermediate",
+    topic_analysis:{
+        "Concepts":{correct:6,total:10},
+        "Logic":{correct:4,total:10},
+        "Practice":{correct:5,total:10}
+    }
+};
 
-let html = `
-<h2>Performance Summary</h2>
-<p><b>Score:</b> ${data.score}</p>
-<p><b>Percentage:</b> ${data.percentage.toFixed(2)}%</p>
-<p><b>Skill Level:</b> ${data.skill_level}</p>
-<p><b>Learning Speed:</b> ${data.learning_speed}</p>
+/* Overview */
+document.getElementById("skillLevel").innerText = result.level;
+document.getElementById("accuracy").innerText = result.percentage + "%";
+document.getElementById("speed").innerText = "Moderate";
+document.getElementById("consistency").innerText = "Good";
 
-<h3>AI Learning Plan Generated</h3>
-<ul>
-<li>Personalized topics roadmap</li>
-<li>Adaptive learning speed</li>
-<li>Practice sets</li>
-<li>Mock tests</li>
-<li>Revision planner</li>
-<li>Weak area focus</li>
-<li>Concept reinforcement</li>
-</ul>
+/* Skill Growth */
+let skillHTML = "";
+for(let topic in result.topic_analysis){
+    let t = result.topic_analysis[topic];
+    let percent = (t.correct/t.total)*100;
+    skillHTML += `
+        <div class="card">
+            <h3>${topic}</h3>
+            <p>Accuracy: ${percent.toFixed(0)}%</p>
+            <span class="badge">Growing</span>
+        </div>
+    `;
+}
+document.getElementById("skillGrowth").innerHTML = skillHTML;
 
-<button onclick="window.location.href='recommendations.html'">Start Learning Path</button>
+/* Weekly Progress */
+let weekHTML = `
+    <div class="card"><h3>Mon</h3><p>+5%</p></div>
+    <div class="card"><h3>Tue</h3><p>+7%</p></div>
+    <div class="card"><h3>Wed</h3><p>+4%</p></div>
+    <div class="card"><h3>Thu</h3><p>+6%</p></div>
+    <div class="card"><h3>Fri</h3><p>+8%</p></div>
 `;
+document.getElementById("weeklyProgress").innerHTML = weekHTML;
 
-document.getElementById("report").innerHTML = html;
+/* Monthly Progress */
+let monthHTML = `
+    <div class="card"><h3>Week 1</h3><p>+10%</p></div>
+    <div class="card"><h3>Week 2</h3><p>+15%</p></div>
+    <div class="card"><h3>Week 3</h3><p>+20%</p></div>
+    <div class="card"><h3>Week 4</h3><p>+25%</p></div>
+`;
+document.getElementById("monthlyProgress").innerHTML = monthHTML;
+
+/* AI Insights */
+document.getElementById("aiInsights").innerHTML = `
+    <p>📌 You learn faster in the morning</p>
+    <p>📌 Practice-based learning improves retention</p>
+    <p>📌 Weak topics need daily revision</p>
+    <p>📌 Consistency improves accuracy rapidly</p>
+    <p>📌 Adaptive practice boosts performance</p>
+`;
 </script>
 
 </body>
