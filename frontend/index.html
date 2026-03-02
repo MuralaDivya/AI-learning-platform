@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Diagnostic Assessment</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.exam-box{
+    background:#fff;
+    padding:30px;
+    border-radius:10px;
+    max-width:700px;
+    margin:auto;
+}
+.question{
+    margin-bottom:20px;
+}
+.options label{
+    display:block;
+    padding:8px;
+    border:1px solid #ddd;
+    border-radius:5px;
+    margin:6px 0;
+    cursor:pointer;
+}
+.options input{
+    margin-right:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>AI Learning Diagnostic System</h1>
+<p class="subtitle">Smart Assessment for Personalized Learning</p>
+
+<div class="exam-box">
+
+<h3>Student Details</h3>
+<select id="class_level">
+<option value="">Select Class / Level</option>
+<option value="1-5">Class 1–5</option>
+<option value="6-10">Class 6–10</option>
+<option value="11-12">Class 11–12</option>
+<option value="graduate">Graduate</option>
+</select>
+
+<input type="text" id="subject" placeholder="Subject (Math, AI, DBMS, Science, etc)">
+<input type="text" id="goal" placeholder="Goal (Exams, Concept Mastery, Competitive, Career)">
+
+<hr>
+
+<h3>AI Diagnostic Test</h3>
+
+<div class="question">
+<p>1. What is the output of 2 + 3 × 2 ?</p>
+<div class="options">
+<label><input type="radio" name="q1" value="wrong"> 10</label>
+<label><input type="radio" name="q1" value="correct"> 8</label>
+<label><input type="radio" name="q1" value="wrong"> 12</label>
+<label><input type="radio" name="q1" value="wrong"> 5</label>
+</div>
+</div>
+
+<div class="question">
+<p>2. Which is a database?</p>
+<div class="options">
+<label><input type="radio" name="q2" value="correct"> MySQL</label>
+<label><input type="radio" name="q2" value="wrong"> HTML</label>
+<label><input type="radio" name="q2" value="wrong"> CSS</label>
+<label><input type="radio" name="q2" value="wrong"> Python</label>
+</div>
+</div>
+
+<div class="question">
+<p>3. AI stands for?</p>
+<div class="options">
+<label><input type="radio" name="q3" value="wrong"> Automated Info</label>
+<label><input type="radio" name="q3" value="correct"> Artificial Intelligence</label>
+<label><input type="radio" name="q3" value="wrong"> Advanced Internet</label>
+<label><input type="radio" name="q3" value="wrong"> Applied Interface</label>
+</div>
+</div>
+
+<button onclick="submitExam()">Submit Assessment</button>
+
+<p id="msg"></p>
+
+</div>
+</div>
+
+<script>
+function submitExam(){
+
+    const answers = document.querySelectorAll("input[type=radio]:checked");
+    let score = 0;
+
+    answers.forEach(ans=>{
+        if(ans.value === "correct"){
+            score++;
+        }
+    });
+
+    const class_level = document.getElementById("class_level").value;
+    const subject = document.getElementById("subject").value;
+    const goal = document.getElementById("goal").value;
+
+    const data = {
+        class_level,
+        subject,
+        goal,
+        score,
+        total: 3
+    };
+
+    fetch("http://127.0.0.1:5000/ai/assessment", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(res=>res.json())
+    .then(result=>{
+        localStorage.setItem("ai_data", JSON.stringify(result));
+        window.location.href="recommendations.html";
+    })
+    .catch(()=>{
+        document.getElementById("msg").innerText="Server error!";
+    });
+}
+</script>
+
+</body>
+</html>

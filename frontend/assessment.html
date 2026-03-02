@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Learning Diagnostic System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Learning Diagnostic System</h1>
+    <p>Smart Assessment for Personalized Learning</p>
+
+    <div class="form-box">
+        <select id="class">
+            <option value="">Select Class</option>
+            <option value="1">Class 1</option>
+            <option value="2">Class 2</option>
+            <option value="3">Class 3</option>
+            <option value="4">Class 4</option>
+            <option value="5">Class 5</option>
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+            <option value="9">Class 9</option>
+            <option value="10">Class 10</option>
+            <option value="11">Class 11</option>
+            <option value="12">Class 12</option>
+            <option value="BTech">BTech</option>
+        </select>
+
+        <input type="text" id="subject" placeholder="Subject (Math, AI, DBMS, Science)">
+
+        <button onclick="startAssessment()">Start AI Assessment</button>
+    </div>
+
+    <form id="assessmentForm">
+        <div id="questionBox" class="question-box"></div>
+        <button type="button" onclick="submitAssessment()" class="submit-btn">Submit Test</button>
+    </form>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

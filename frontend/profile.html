@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Student Profile</h1>
+    <p class="subtitle">Your Learning Dashboard</p>
+
+    <div class="form-box">
+        <p><strong>Name:</strong> <span id="p_name"></span></p>
+        <p><strong>Email:</strong> <span id="p_email"></span></p>
+        <p><strong>Age:</strong> <span id="p_age"></span></p>
+        <p><strong>Class:</strong> <span id="p_class"></span></p>
+        <p><strong>Subject Interest:</strong> <span id="p_subject"></span></p>
+
+        <hr>
+
+        <button onclick="goToAssessment()">Start AI Assessment</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    document.getElementById("p_name").innerText = localStorage.getItem("name") || "N/A";
+    document.getElementById("p_email").innerText = localStorage.getItem("email") || "N/A";
+    document.getElementById("p_age").innerText = localStorage.getItem("age") || "N/A";
+    document.getElementById("p_class").innerText = localStorage.getItem("class") || "N/A";
+    document.getElementById("p_subject").innerText = localStorage.getItem("subject_interest") || "N/A";
+
+});
+
+function goToAssessment(){
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Learning Report</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Learning Analysis Report</h1>
+    <div id="report" class="card"></div>
+</div>
+
+<script>
+const data = JSON.parse(localStorage.getItem("ai_result"));
+
+let html = `
+<h2>Performance Summary</h2>
+<p><b>Score:</b> ${data.score}</p>
+<p><b>Percentage:</b> ${data.percentage.toFixed(2)}%</p>
+<p><b>Skill Level:</b> ${data.skill_level}</p>
+<p><b>Learning Speed:</b> ${data.learning_speed}</p>
+
+<h3>AI Learning Plan Generated</h3>
+<ul>
+<li>Personalized topics roadmap</li>
+<li>Adaptive learning speed</li>
+<li>Practice sets</li>
+<li>Mock tests</li>
+<li>Revision planner</li>
+<li>Weak area focus</li>
+<li>Concept reinforcement</li>
+</ul>
+
+<button onclick="window.location.href='recommendations.html'">Start Learning Path</button>
+`;
+
+document.getElementById("report").innerHTML = html;
+</script>
+
+</body>
+</html>

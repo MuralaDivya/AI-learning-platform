@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Learning Diagnostic System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Learning Diagnostic System</h1>
+    <p>Smart Assessment for Personalized Learning</p>
+
+    <div class="card">
+        <h2>Student Details</h2>
+
+        <input id="class" placeholder="Class / Level (1-12 / BTech / Degree)">
+        <input id="subject" placeholder="Subject (AI, DBMS, Math, Science)">
+        <input id="goal" placeholder="Goal (Exams, Career, Mastery)">
+
+        <button onclick="startAssessment()">Start AI Diagnostic Test</button>
+    </div>
+
+    <div id="examBox" class="card"></div>
+</div>
+
+<script>
+let examQuestions = [];
+
+function startAssessment(){
+    const subject = document.getElementById("subject").value;
+    const classLevel = document.getElementById("class").value;
+
+    fetch("http://127.0.0.1:5000/ai/get_exam", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            subject: subject,
+            class: classLevel
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        examQuestions = data.questions;
+        renderExam();
+    });
+}
+
+function renderExam(){
+    let html = "<h2>AI Diagnostic Test</h2><form id='examForm'>";
+    
+    examQuestions.forEach((q, i) => {
+        html += `
+            <div class="question">
+                <p>${i+1}. ${q.q}</p>
+                <input type="text" name="q${i}" placeholder="Your answer">
+            </div>
+        `;
+    });
+
+    html += `<button type="button" onclick="submitExam()">Submit Assessment</button></form>`;
+
+    document.getElementById("examBox").innerHTML = html;
+}
+
+function submitExam(){
+    const form = document.getElementById("examForm");
+    let answers = [];
+
+    examQuestions.forEach((q, i) => {
+        answers.push(form[`q${i}`].value);
+    });
+
+    fetch("http://127.0.0.1:5000/ai/submit_exam", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            questions: examQuestions,
+            answers: answers
+        })
+    })
+    .then(res => res.json())
+    .then(result => {
+        localStorage.setItem("ai_result", JSON.stringify(result));
+        window.location.href = "progress.html";
+    });
+}
+</script>
+
+</body>
+</html>

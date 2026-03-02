@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Registration</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Personalized Learning Platform</h1>
+    <p class="subtitle">Student Registration</p>
+
+    <div class="form-box">
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="number" id="age" placeholder="Age" required>
+        <input type="text" id="class" placeholder="Class / Course" required>
+        <input type="text" id="subject_interest" placeholder="Subject Interest" required>
+
+        <button onclick="registerStudent()">Register</button>
+
+        <p id="msg"></p>
+    </div>
+</div>
+
+<script>
+function registerStudent(){
+
+    const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+        age: parseInt(document.getElementById("age").value),
+        class: document.getElementById("class").value,
+        subject_interest: document.getElementById("subject_interest").value
+    };
+
+    fetch("http://127.0.0.1:5000/ai/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+
+        if(result.status === "success"){
+
+            // Save data for profile page
+            localStorage.setItem("name", data.name);
+            localStorage.setItem("email", data.email);
+            localStorage.setItem("age", data.age);
+            localStorage.setItem("class", data.class);
+            localStorage.setItem("subject_interest", data.subject_interest);
+
+            document.getElementById("msg").innerText = "Registration successful!";
+            document.getElementById("msg").style.color = "green";
+
+            setTimeout(function(){
+                window.location.replace("profile.html");
+            }, 1000);
+
+        }else{
+            document.getElementById("msg").innerText = result.message;
+            document.getElementById("msg").style.color = "red";
+        }
+    })
+    .catch(err => {
+        document.getElementById("msg").innerText = "Server error!";
+        document.getElementById("msg").style.color = "red";
+        console.error(err);
+    });
+}
+</script>
+
+</body>
+</html>
